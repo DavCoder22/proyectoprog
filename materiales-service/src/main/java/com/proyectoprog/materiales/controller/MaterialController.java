@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.proyectoprog.materiales.model.Material;
 import com.proyectoprog.materiales.service.MaterialService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/materiales")
 public class MaterialController {
@@ -36,12 +38,17 @@ public class MaterialController {
     }
 
     @PostMapping
-    public Material createMaterial(@RequestBody Material material) {
-        return materialService.save(material);
+    public ResponseEntity<Material> createMaterial(@Valid @RequestBody Material material) {
+        try {
+            Material savedMaterial = materialService.save(material);
+            return ResponseEntity.ok(savedMaterial);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Material> updateMaterial(@PathVariable int id, @RequestBody Material materialDetails) {
+    public ResponseEntity<Material> updateMaterial(@PathVariable int id, @Valid @RequestBody Material materialDetails) {
         Optional<Material> material = materialService.findById(id);
         if (material.isPresent()) {
             Material updatedMaterial = material.get();
@@ -58,7 +65,11 @@ public class MaterialController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMaterial(@PathVariable int id) {
-        materialService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        if(materialService.findById(id).isPresent()) {
+            materialService.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

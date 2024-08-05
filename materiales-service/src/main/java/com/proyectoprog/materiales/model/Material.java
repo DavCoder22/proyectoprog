@@ -1,6 +1,7 @@
 package com.proyectoprog.materiales.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -11,17 +12,17 @@ public class Material {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
+    @NotBlank
     private String nombre;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "ENUM('resina', 'filamento')")
+    @Column(columnDefinition = "ENUM('resina', 'filamento')")
     private TipoMaterial tipo;
 
-    @Column(nullable = false)
+    @NotNull
+    @DecimalMin("0.0")
     private double costo;
 
-    @Column(columnDefinition = "TEXT")
     private String descripcion;
 
     @Column(name = "fechaCreacion", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
