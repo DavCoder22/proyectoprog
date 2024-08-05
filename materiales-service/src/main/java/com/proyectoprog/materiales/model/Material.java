@@ -11,19 +11,23 @@ public class Material {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String nombre;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "ENUM('resina', 'filamento')")
     private TipoMaterial tipo;
 
+    @Column(nullable = false)
     private double costo;
 
+    @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(name = "fecha_creacion", updatable = false)
+    @Column(name = "fechaCreacion", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp fechaCreacion;
 
-    @Column(name = "fecha_actualizacion")
+    @Column(name = "fechaActualizacion", insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Timestamp fechaActualizacion;
 
     // Getters y Setters
