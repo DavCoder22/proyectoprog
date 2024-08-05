@@ -1,7 +1,9 @@
-version: '3.7'
+version: '3.8'
+
 services:
   eureka-server:
     image: davdocker22/eureka-gateway
+    container_name: eureka-server
     ports:
       - "8761:8761"
     networks:
@@ -9,24 +11,36 @@ services:
 
   materiales-service:
     image: davdocker22/materiales-service
+    container_name: materiales-service
     ports:
       - "8081:8081"
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
-      - SPRING_DATASOURCE_URL=jdbc:mysql://cotizador_mysql:3308/proyectoprog_db
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3308/proyectoprog_db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=proYectoProg2024
+    depends_on:
+      - mysql
     networks:
       - proyectoprog-network
 
   cotizador_mysql:
     image: davdocker22/cotizador_mysql
+    container_name: cotizador_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: proyectoprog_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: proYectoProg2024
     ports:
       - "3308:3308"
-    environment:
-      - MYSQL_ROOT_PASSWORD=proYectoProg2024
+    volumes:
+      - mysql-data:/var/lib/mysql
     networks:
       - proyectoprog-network
+
+volumes:
+  mysql-data:
 
 networks:
   proyectoprog-network:
